@@ -1,0 +1,19 @@
+server.port: 80
+
+spring:
+  application:
+    name: ${DOMAIN_NAME:orders.schedule}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_URL}/postgres
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
+    sql-script-encoding: UTF-8
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate:
+      ddl-auto: create-drop
+      
+schedule:
+  programs:
+    url: ${PROGRAMS_URL:sch-programs.test:80}

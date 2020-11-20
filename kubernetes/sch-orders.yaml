@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    name: sch-orders
+  name: sch-orders
+  namespace: {namespace:}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: sch-orders
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        name: sch-orders
+    spec:
+      containers:
+      - name: sch-orders
+        image: {imagName}:{imageTag}
+        env:
+        - name: POSTGRES_URL
+          value: "postgres:5432"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASS
+          value: "postgres"
+        - name: PROGRAMS_URL
+          value: "sch-programs:80"
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: 1000Mi
+          limits:
+            memory: 5000Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: sch-orders
+  name: sch-orders
+  namespace: easyvideo
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    name: sch-orders
